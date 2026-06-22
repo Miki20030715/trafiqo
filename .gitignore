@@ -7,3 +7,6 @@ Thumbs.db
 
 # Node (not used at runtime; only for local tooling)
 node_modules/
+
+# Build output
+dist/
