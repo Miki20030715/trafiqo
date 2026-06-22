@@ -29,22 +29,27 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 
 ## Brand
 
+Palette derived from the official Trafiqo logo (blue / green / yellow / red):
+
 | Token | Hex |
 |-------|-----|
-| Magenta (primary) | `#D6206B` |
-| Orange (accent) | `#F5821F` |
-| Green (accent) | `#1FA86B` |
+| Blue (primary) | `#1E63D6` |
+| Green (accent) | `#2BA24A` |
+| Yellow (accent) | `#F4B400` |
+| Red (accent) | `#E0342A` |
+
+Yellow is used only as a fill/badge with dark text (never as small text on
+white) to keep contrast accessible.
 
 ## Placeholders to replace before launch
 
-- **Logo** — currently a typographic wordmark + 3-dot mark in brand colours.
-  Drop in the official logo asset. *(Note: the supplied logo art uses
-  blue/green/yellow/red; the page is built to the stated magenta/orange/green
-  palette — align these before launch.)*
+- **Logo** — currently a typographic wordmark + 3-dot mark in the logo colours.
+  Drop in the official logo asset to replace the wordmark.
 - **Technical brief** — `assets/Trafiqo-Technical-Brief.pdf` is a placeholder.
 - **Team & partners** — names, photos and partner logos are placeholders.
-- **Contact form** — submits client-side only and shows a confirmation. Wire the
-  `#demo-form` handler to your inbox/CRM endpoint (or a `mailto:` action).
+- **Contact form** — the `#demo-form` opens the visitor's email app via a
+  `mailto:` link (no backend). Set `CONTACT_EMAIL` in the inline script to the
+  real inbox before launch.
 
 ## Content guardrails (kept intentionally)
 
