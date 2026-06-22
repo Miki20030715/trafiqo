@@ -1,0 +1,9 @@
+# Local Claude Code settings (machine-specific)
+.claude/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+
+# Node (not used at runtime; only for local tooling)
+node_modules/

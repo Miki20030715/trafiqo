@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trafiqo — Human behaviour prediction for cities · Smarter choices. Smoother cities.</title>
+  <meta name="description" content="Trafiqo is an AI-driven decision-support platform for cities and transport authorities. It predicts how people respond to pricing, congestion, time pressure and events — using aggregated, anonymised data and synthetic populations, with full human oversight." />
+  <meta name="theme-color" content="#D6206B" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Trafiqo — Smarter choices. Smoother cities." />
+  <meta property="og:description" content="A behaviour engine for urban mobility. Trafiqo predicts how people respond when cities change pricing, routing or policy — privacy-aware, auditable, human-reviewed." />
+
+  <!-- Favicon: brand 3-agent mark -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 24'%3E%3Ccircle cx='8' cy='12' r='5' fill='%23D6206B'/%3E%3Ccircle cx='19' cy='12' r='4' fill='%23F5821F'/%3E%3Ccircle cx='29' cy='12' r='3' fill='%231FA86B'/%3E%3C/svg%3E" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              magenta: '#D6206B',
+              orange: '#F5821F',
+              green: '#1FA86B',
+            },
+            ink: '#1A1B1F',
+            'ink-soft': '#585A62',
+            mist: '#F6F6F7',
+            line: '#E8E8EB',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+          },
+          maxWidth: { content: '74rem' },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { -webkit-font-smoothing: antialiased; }
+    [id] { scroll-margin-top: 6rem; }
+
+    /* FAQ accordion (smooth height with grid-rows technique) */
+    .faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+    .faq.open .faq-a { grid-template-rows: 1fr; }
+    .faq-a > div { overflow: hidden; }
+    .faq-icon { transition: transform .3s ease; }
+    .faq.open .faq-icon { transform: rotate(45deg); }
+
+    /* Active nav link */
+    .nav-link.active { color: #D6206B; }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .faq-a, .faq-icon { transition: none; }
+    }
+  </style>
+</head>
+
+<body class="bg-white font-sans text-ink antialiased">
+
+  <a href="#hero" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-3 focus:left-3 focus:rounded-lg focus:bg-ink focus:px-4 focus:py-2 focus:text-white">Skip to content</a>
+
+  <!-- ============================ NAV ============================ -->
+  <header class="sticky top-0 z-40 border-b border-line bg-white/90 backdrop-blur">
+    <nav class="mx-auto flex max-w-content items-center justify-between gap-4 px-6 py-3.5" aria-label="Primary">
+      <!-- Logo -->
+      <a href="#hero" class="flex items-center gap-2.5" aria-label="Trafiqo home">
+        <svg viewBox="0 0 36 24" class="h-5 w-auto" aria-hidden="true">
+          <circle cx="8" cy="12" r="5" fill="#D6206B" />
+          <circle cx="19" cy="12" r="4" fill="#F5821F" />
+          <circle cx="29" cy="12" r="3" fill="#1FA86B" />
+        </svg>
+        <span class="text-xl font-extrabold tracking-tight text-ink">Trafiqo</span>
+      </a>
+
+      <!-- Desktop links -->
+      <div class="hidden items-center gap-8 md:flex">
+        <a href="#product" class="nav-link text-sm font-medium text-ink-soft transition hover:text-ink">Product</a>
+        <a href="#how" class="nav-link text-sm font-medium text-ink-soft transition hover:text-ink">How it works</a>
+        <a href="#why" class="nav-link text-sm font-medium text-ink-soft transition hover:text-ink">Why cities care</a>
+        <a href="#trust" class="nav-link text-sm font-medium text-ink-soft transition hover:text-ink">Trust</a>
+        <a href="#contact" class="nav-link text-sm font-medium text-ink-soft transition hover:text-ink">Contact</a>
+      </div>
+
+      <div class="hidden md:block">
+        <a href="#contact" class="inline-flex items-center rounded-full bg-brand-magenta px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#bd1a5e]">Request a city demo</a>
+      </div>
+
+      <!-- Mobile toggle -->
+      <button id="menu-btn" class="inline-flex items-center justify-center rounded-lg p-2 text-ink md:hidden" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
+        <svg id="menu-open-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
+        <svg id="menu-close-icon" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+      </button>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden border-t border-line bg-white md:hidden">
+      <div class="mx-auto flex max-w-content flex-col gap-1 px-6 py-4">
+        <a href="#product" class="mobile-link rounded-lg px-2 py-3 text-base font-medium text-ink hover:bg-mist">Product</a>
+        <a href="#how" class="mobile-link rounded-lg px-2 py-3 text-base font-medium text-ink hover:bg-mist">How it works</a>
+        <a href="#why" class="mobile-link rounded-lg px-2 py-3 text-base font-medium text-ink hover:bg-mist">Why cities care</a>
+        <a href="#trust" class="mobile-link rounded-lg px-2 py-3 text-base font-medium text-ink hover:bg-mist">Trust</a>
+        <a href="#contact" class="mobile-link rounded-lg px-2 py-3 text-base font-medium text-ink hover:bg-mist">Contact</a>
+        <a href="#contact" class="mobile-link mt-2 inline-flex items-center justify-center rounded-full bg-brand-magenta px-5 py-3 text-sm font-semibold text-white">Request a city demo</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================ 1 · HERO ============================ -->
+    <section id="hero" class="relative overflow-hidden">
+      <!-- soft, single-colour tint blobs (no multi-colour gradients) -->
+      <div class="pointer-events-none absolute -right-32 -top-24 h-96 w-96 rounded-full bg-brand-magenta/5 blur-3xl" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute -left-32 top-40 h-96 w-96 rounded-full bg-brand-green/5 blur-3xl" aria-hidden="true"></div>
+
+      <div class="relative mx-auto grid max-w-content items-center gap-12 px-6 py-16 md:py-24 lg:grid-cols-2">
+        <div>
+          <p class="inline-flex items-center gap-2 rounded-full border border-line bg-mist px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-ink-soft">
+            <span class="h-1.5 w-1.5 rounded-full bg-brand-magenta"></span>
+            For cities &amp; transport authorities
+          </p>
+
+          <h1 class="mt-6 text-4xl font-extrabold leading-[1.08] tracking-tight text-ink sm:text-5xl">
+            Cut congestion by understanding <span class="text-brand-magenta">how people respond.</span>
+          </h1>
+
+          <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
+            Traffic isn't just an infrastructure issue. It's a behavior problem. Trafiqo predicts how people react to pricing, congestion, time pressure and events — then turns that into decision-support outputs your teams can act on.
+          </p>
+
+          <!-- commercial version (hero only, per the governance brief) -->
+          <blockquote class="mt-6 max-w-xl rounded-2xl border border-line bg-mist/70 p-4 text-[15px] italic leading-relaxed text-ink">
+            "Trafiqo gives cities a privacy-first way to see how people will respond — before congestion happens. Aggregated data, synthetic populations, full human oversight."
+          </blockquote>
+
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href="#contact" class="inline-flex items-center justify-center gap-2 rounded-full bg-brand-magenta px-6 py-3.5 text-base font-semibold text-white shadow-sm transition hover:bg-[#bd1a5e]">
+              Request a city demo
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16m0 0-6-6m6 6-6 6" /></svg>
+            </a>
+            <a href="assets/Trafiqo-Technical-Brief.pdf" download class="inline-flex items-center justify-center gap-2 rounded-full border border-line bg-white px-6 py-3.5 text-base font-semibold text-ink transition hover:border-ink/30 hover:bg-mist">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
+              Download technical brief
+            </a>
+          </div>
+
+          <ul class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-soft">
+            <li class="inline-flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-brand-magenta"></span>Aggregated, anonymised data</li>
+            <li class="inline-flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-brand-orange"></span>Synthetic populations</li>
+            <li class="inline-flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-brand-green"></span>Human oversight</li>
+          </ul>
+        </div>
+
+        <!-- Hero illustration: synthetic agents responding to a change -->
+        <div class="relative">
+          <div class="rounded-3xl border border-line bg-white p-5 shadow-[0_20px_60px_-30px_rgba(26,27,31,0.35)]">
+            <div class="mb-4 flex items-center justify-between">
+              <span class="text-xs font-semibold uppercase tracking-wider text-ink-soft">Behaviour engine · schematic</span>
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-mist px-2.5 py-1 text-[11px] font-semibold text-ink-soft">Illustrative</span>
+            </div>
+            <svg viewBox="0 0 520 360" class="w-full" role="img" aria-label="Schematic: synthetic agents choosing between routes when a price change is applied.">
+              <defs>
+                <pattern id="grid" width="26" height="26" patternUnits="userSpaceOnUse">
+                  <path d="M26 0H0V26" fill="none" stroke="#EEEEF1" stroke-width="1" />
+                </pattern>
+              </defs>
+              <rect x="0" y="0" width="520" height="360" rx="16" fill="#FBFBFC" />
+              <rect x="0" y="0" width="520" height="360" rx="16" fill="url(#grid)" />
+
+              <!-- baseline route -->
+              <path d="M40 280 C 160 280, 200 180, 360 150 S 470 110, 488 96" fill="none" stroke="#E4E4E8" stroke-width="20" stroke-linecap="round" />
+              <!-- predicted re-routed path (dashed, brand magenta) -->
+              <path d="M40 280 C 150 300, 230 250, 300 230 S 420 230, 488 210" fill="none" stroke="#D6206B" stroke-width="3" stroke-dasharray="7 8" stroke-linecap="round" opacity="0.85" />
+
+              <!-- price-change trigger -->
+              <g transform="translate(300 96)">
+                <circle r="22" fill="#F5821F" opacity="0.12" />
+                <circle r="13" fill="#fff" stroke="#F5821F" stroke-width="2.5" />
+                <text x="0" y="5" text-anchor="middle" font-size="14" font-weight="800" fill="#F5821F" font-family="Inter, sans-serif">€</text>
+              </g>
+              <text x="300" y="58" text-anchor="middle" font-size="12" font-weight="700" fill="#585A62" font-family="Inter, sans-serif">Peak-hour price change</text>
+
+              <!-- synthetic agents -->
+              <circle cx="70" cy="278" r="6" fill="#D6206B" />
+              <circle cx="120" cy="262" r="6" fill="#1FA86B" />
+              <circle cx="150" cy="290" r="6" fill="#F5821F" />
+              <circle cx="220" cy="240" r="6" fill="#D6206B" />
+              <circle cx="265" cy="232" r="6" fill="#1FA86B" />
+              <circle cx="345" cy="160" r="6" fill="#585A62" />
+              <circle cx="360" cy="226" r="6" fill="#F5821F" />
+              <circle cx="430" cy="214" r="6" fill="#1FA86B" />
+              <circle cx="455" cy="120" r="6" fill="#585A62" />
+
+              <!-- legend -->
+              <g font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#585A62">
+                <circle cx="46" cy="330" r="5" fill="#585A62" /><text x="58" y="334">Stays</text>
+                <circle cx="120" cy="330" r="5" fill="#D6206B" /><text x="132" y="334">Reroutes</text>
+                <circle cx="222" cy="330" r="5" fill="#1FA86B" /><text x="234" y="334">Shifts time</text>
+                <circle cx="338" cy="330" r="5" fill="#F5821F" /><text x="350" y="334">Switches mode</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 2 · THE PROBLEM ============================ -->
+    <section id="problem" class="bg-mist">
+      <div class="mx-auto max-w-content px-6 py-20 md:py-28">
+        <div class="max-w-3xl">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-orange">The problem</p>
+          <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Congestion is a behaviour problem — not only an infrastructure one.</h2>
+          <p class="mt-6 text-lg leading-relaxed text-ink-soft">
+            Cities have spent decades adding lanes, signals and sensors. But traffic is the sum of thousands of individual decisions — when to leave, which route to take, whether to drive at all. The moment conditions change — a new toll, a closed bridge, a concert, a wet Monday — people respond, and the whole network shifts. Infrastructure tells you what a road <em>can</em> carry. It can't tell you how people will <em>choose</em> to use it.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          <div class="rounded-2xl border border-line bg-white p-6">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-magenta/10 text-brand-magenta">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+            </div>
+            <h3 class="mt-4 text-lg font-bold text-ink">Roads don't cause congestion — decisions do.</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-ink-soft">Every jam is thousands of people choosing the same road at the same time.</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-white p-6">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-orange/10 text-brand-orange">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 17l6-6 4 4 7-7m0 0h-5m5 0v5" /></svg>
+            </div>
+            <h3 class="mt-4 text-lg font-bold text-ink">Static models assume behaviour stays fixed.</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-ink-soft">It doesn't. People adapt to price, time pressure and disruption — continuously.</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-white p-6">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1 1 0 010-.644C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178a1 1 0 010 .644C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            </div>
+            <h3 class="mt-4 text-lg font-bold text-ink">Sensors capture the present, not the response.</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-ink-soft">They show what's happening now — not what happens to a change you're considering.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 3 · HUMAN BEHAVIOUR PREDICTION ============================ -->
+    <section id="product" class="bg-white">
+      <div class="mx-auto max-w-content px-6 py-20 md:py-28">
+        <div class="grid gap-12 lg:grid-cols-12 lg:items-start">
+          <div class="lg:col-span-7">
+            <p class="text-sm font-semibold uppercase tracking-wider text-brand-magenta">The mechanism behind the outcomes</p>
+            <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Human Behaviour Prediction</h2>
+            <p class="mt-6 text-xl leading-relaxed text-ink">
+              Trafiqo doesn't just watch where cars are. It models how thousands of people decide <span class="font-semibold text-brand-magenta">at once</span> — when price, congestion or time pressure changes.
+            </p>
+            <p class="mt-5 text-lg leading-relaxed text-ink-soft">
+              A behaviour engine for urban mobility: thousands of <strong class="font-semibold text-ink">synthetic agents</strong> that respond differently to pricing, time pressure, events and routing — so you can test a change before it ever reaches the street.
+            </p>
+            <p class="mt-5 text-lg leading-relaxed text-ink-soft">
+              If you work in transport planning, this is <strong class="font-semibold text-ink">behavioural / travel-demand modelling</strong> — rebuilt to run continuously, at city scale, on live conditions.
+            </p>
+          </div>
+
+          <div class="lg:col-span-5">
+            <!-- anti-surveillance callout -->
+            <div class="rounded-2xl border border-brand-green/30 bg-brand-green/5 p-6">
+              <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-green/15 text-brand-green">
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg>
+                </div>
+                <h3 class="text-base font-bold text-ink">Modelled, not monitored</h3>
+              </div>
+              <p class="mt-4 text-[15px] leading-relaxed text-ink-soft">
+                Synthetic agents are <strong class="font-semibold text-ink">simulated populations, not real people.</strong> Trafiqo models aggregated, anonymised behaviour — <strong class="font-semibold text-ink">never named individuals.</strong>
+              </p>
+            </div>
+
+            <div class="mt-5 grid grid-cols-3 gap-3 text-center">
+              <div class="rounded-xl border border-line bg-mist p-4">
+                <p class="text-2xl font-extrabold text-brand-magenta">Price</p>
+                <p class="mt-1 text-xs font-medium text-ink-soft">responds to</p>
+              </div>
+              <div class="rounded-xl border border-line bg-mist p-4">
+                <p class="text-2xl font-extrabold text-brand-orange">Time</p>
+                <p class="mt-1 text-xs font-medium text-ink-soft">responds to</p>
+              </div>
+              <div class="rounded-xl border border-line bg-mist p-4">
+                <p class="text-2xl font-extrabold text-brand-green">Events</p>
+                <p class="mt-1 text-xs font-medium text-ink-soft">responds to</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 4 · HOW IT WORKS ============================ -->
+    <section id="how" class="bg-mist">
+      <div class="mx-auto max-w-content px-6 py-20 md:py-28">
+        <div class="max-w-2xl">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-orange">How it works</p>
+          <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">How Trafiqo works</h2>
+        </div>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          <!-- Step 1 -->
+          <div class="relative rounded-2xl border border-line bg-white p-7">
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-magenta text-sm font-bold text-white">1</span>
+            <h3 class="mt-5 text-lg font-bold text-ink">Inputs</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-ink-soft">Live traffic, road-network and demand data, pricing signals, policies, weather and events — approved and provided through city partners.</p>
+          </div>
+          <!-- Step 2 -->
+          <div class="relative rounded-2xl border border-line bg-white p-7">
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-orange text-sm font-bold text-white">2</span>
+            <h3 class="mt-5 text-lg font-bold text-ink">Behavioural simulation engine</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-ink-soft">Trafiqo runs a simulated population of synthetic agents that respond to those conditions the way real travellers would: choosing routes, times and modes — or staying put.</p>
+          </div>
+          <!-- Step 3 -->
+          <div class="relative rounded-2xl border border-line bg-white p-7">
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white">3</span>
+            <h3 class="mt-5 text-lg font-bold text-ink">Outputs</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-ink-soft">Optimised traffic distribution, pricing recommendations, and congestion / travel-time / emissions insight — delivered as decision-support your teams review and act on.</p>
+          </div>
+        </div>
+
+        <p class="mt-8 flex items-center gap-2.5 text-[15px] font-medium text-ink">
+          <svg class="h-5 w-5 flex-shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" /></svg>
+          No black-box decisions. Every output is documented, testable and human-reviewed.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================ 5 · WHY CITIES CARE ============================ -->
+    <section id="why" class="bg-white">
+      <div class="mx-auto max-w-content px-6 py-20 md:py-28">
+        <div class="max-w-3xl">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-magenta">Why cities care</p>
+          <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">The cost of getting it wrong is measured in hours, money and clean air.</h2>
+        </div>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          <div class="rounded-2xl border border-line bg-mist p-7">
+            <p class="text-5xl font-extrabold tracking-tight text-brand-magenta">~62%</p>
+            <p class="mt-3 font-semibold text-ink">Congestion level, Budapest</p>
+            <p class="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-ink-soft">External source</p>
+            <p class="mt-2 text-xs text-ink-soft">TomTom Traffic Index 2025 · as reported</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-mist p-7">
+            <p class="text-5xl font-extrabold tracking-tight text-brand-orange">~131h</p>
+            <p class="mt-3 font-semibold text-ink">Lost per driver, per year</p>
+            <p class="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-ink-soft">External source</p>
+            <p class="mt-2 text-xs text-ink-soft">TomTom Traffic Index 2025 · Budapest · as reported</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-mist p-7">
+            <p class="text-5xl font-extrabold tracking-tight text-brand-green">Dynamic</p>
+            <p class="mt-3 font-semibold text-ink">Mobility behaviour shifts continuously — it isn't static</p>
+            <p class="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-ink-soft">External source</p>
+            <p class="mt-2 text-xs text-ink-soft">BKK 2025 · as reported</p>
+          </div>
+        </div>
+
+        <p class="mt-8 max-w-3xl text-lg leading-relaxed text-ink-soft">
+          Congestion drains time, fuel, money and air quality from a city every single day. And because mobility behaviour is dynamic — not static — a fixed model built last year is already out of date. Cities need to see how people will respond <em>before</em> committing budget or political capital.
+        </p>
+        <p class="mt-4 text-sm italic text-ink-soft">Figures above are third-party sources, shown as reported and approximate — not Trafiqo results.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 6 · SIMULATION EXAMPLE ============================ -->
+    <section id="simulation" class="bg-mist">
+      <div class="mx-auto max-w-content px-6 py-20 md:py-28">
+        <div class="overflow-hidden rounded-3xl border border-line bg-white">
+          <div class="flex flex-wrap items-center gap-3 border-b border-line bg-brand-orange/[0.07] px-7 py-4">
+            <span class="inline-flex items-center gap-2 rounded-full bg-brand-orange/15 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-orange">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+              Simulation / illustrative
+            </span>
+            <span class="text-sm font-semibold text-ink">Not a pilot result</span>
+          </div>
+
+          <div class="grid gap-10 p-7 md:p-10 lg:grid-cols-2 lg:items-center">
+            <div>
+              <h2 class="text-3xl font-extrabold tracking-tight text-ink">What a peak-hour price change <span class="text-brand-orange">could</span> look like.</h2>
+              <p class="mt-5 text-lg leading-relaxed text-ink-soft">
+                We simulate a city that introduces a small peak-hour charge on one congested corridor. Trafiqo's synthetic population responds: some travellers shift departure times, some reroute, a few switch modes.
+              </p>
+              <p class="mt-5 rounded-xl border border-line bg-mist p-4 text-sm leading-relaxed text-ink-soft">
+                These figures are generated by Trafiqo's simulation to show how the model behaves. They are <strong class="font-semibold text-ink">illustrative, not validated outcomes from a deployed pilot.</strong> No completed pilot exists yet.
+              </p>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-3">
+              <div class="rounded-2xl border border-line bg-mist p-5 text-center">
+                <p class="text-4xl font-extrabold text-brand-magenta">−18%</p>
+                <p class="mt-2 text-sm font-medium text-ink">peak-corridor volume</p>
+                <p class="mt-3 text-[10px] font-semibold uppercase tracking-wide text-ink-soft">Simulation output / illustrative</p>
+              </div>
+              <div class="rounded-2xl border border-line bg-mist p-5 text-center">
+                <p class="text-4xl font-extrabold text-brand-orange">−9 min</p>
+                <p class="mt-2 text-sm font-medium text-ink">avg. corridor travel time</p>
+                <p class="mt-3 text-[10px] font-semibold uppercase tracking-wide text-ink-soft">Simulation output / illustrative</p>
+              </div>
+              <div class="rounded-2xl border border-line bg-mist p-5 text-center">
+                <p class="text-4xl font-extrabold text-brand-green">+6%</p>
+                <p class="mt-2 text-sm font-medium text-ink">shift into off-peak</p>
+                <p class="mt-3 text-[10px] font-semibold uppercase tracking-wide text-ink-soft">Simulation output / illustrative</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 7 · WHY TRAFIQO IS DIFFERENT ============================ -->
+    <section id="different" class="bg-white">
+      <div class="mx-auto max-w-content px-6 py-20 md:py-28">
+        <div class="max-w-3xl">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-orange">Why Trafiqo is different</p>
+          <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Cameras detect movement. <span class="text-brand-magenta">Trafiqo predicts response.</span></h2>
+          <p class="mt-5 text-lg leading-relaxed text-ink-soft">They're layers, not rivals. One shows what's happening now; the other models what happens next.</p>
+        </div>
+
+        <div class="mt-12 grid gap-5 lg:grid-cols-2">
+          <!-- Sensing layer -->
+          <div class="rounded-2xl border border-line bg-mist p-8">
+            <span class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-ink-soft">Sensing layer · now</span>
+            <h3 class="mt-5 flex items-center gap-3 text-xl font-bold text-ink">
+              <svg class="h-6 w-6 text-ink-soft" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316z" /><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0zM18.75 10.5h.008v.008h-.008V10.5z" /></svg>
+              Cameras &amp; detectors
+            </h3>
+            <p class="mt-3 text-[15px] leading-relaxed text-ink-soft">
+              Cameras and detectors — such as our partner <strong class="font-semibold text-ink">Miracle Traffic AI</strong> — show what's happening on the road <strong class="font-semibold text-ink">right now</strong>.
+            </p>
+          </div>
+
+          <!-- Prediction layer -->
+          <div class="rounded-2xl border-2 border-brand-magenta/25 bg-brand-magenta/[0.04] p-8">
+            <span class="inline-flex items-center gap-2 rounded-full bg-brand-magenta/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-brand-magenta">Prediction layer · next</span>
+            <h3 class="mt-5 flex items-center gap-3 text-xl font-bold text-ink">
+              <svg class="h-6 w-6 text-brand-magenta" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.847-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.847.814a4.5 4.5 0 0 0-3.09 3.09zM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456z" /></svg>
+              Trafiqo
+            </h3>
+            <p class="mt-3 text-[15px] leading-relaxed text-ink">
+              Trafiqo models what will happen <strong class="font-semibold">if the system changes</strong> — a new price, a closure, a major event.
+            </p>
+          </div>
+        </div>
+
+        <!-- classic vs trafiqo -->
+        <div class="mt-5 grid gap-5 rounded-2xl border border-line bg-mist p-8 sm:grid-cols-2">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-ink-soft">Classic flow / infrastructure models</p>
+            <p class="mt-2 text-[15px] leading-relaxed text-ink-soft">Describe current or average flow — and assume behaviour is fixed.</p>
+          </div>
+          <div class="sm:border-l sm:border-line sm:pl-8">
+            <p class="text-xs font-semibold uppercase tracking-wide text-brand-magenta">Trafiqo</p>
+            <p class="mt-2 text-[15px] leading-relaxed text-ink">Predicts how people <strong class="font-semibold">respond</strong> when the rules change.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 8 · VALIDATION & PILOT ROADMAP ============================ -->
+    <section id="validation" class="bg-mist">
+      <div class="mx-auto max-w-content px-6 py-20 md:py-28">
+        <div class="grid gap-12 lg:grid-cols-12">
+          <div class="lg:col-span-5">
+            <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Validation &amp; pilot roadmap</p>
+            <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">How we will validate Trafiqo with cities.</h2>
+            <ul class="mt-8 space-y-4">
+              <li class="flex gap-3"><svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg><span class="text-[15px] leading-relaxed text-ink-soft"><strong class="font-semibold text-ink">Historical backtesting</strong> on real city data.</span></li>
+              <li class="flex gap-3"><svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg><span class="text-[15px] leading-relaxed text-ink-soft"><strong class="font-semibold text-ink">Out-of-sample testing</strong> against held-back periods.</span></li>
+              <li class="flex gap-3"><svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg><span class="text-[15px] leading-relaxed text-ink-soft"><strong class="font-semibold text-ink">Pilot calibration</strong> with transport authorities.</span></li>
+              <li class="flex gap-3"><svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg><span class="text-[15px] leading-relaxed text-ink-soft"><strong class="font-semibold text-ink">Confidence indicators</strong> on every output — so cities judge reliability, not certainties.</span></li>
+            </ul>
+            <p class="mt-8 rounded-xl border border-line bg-white p-4 text-sm leading-relaxed text-ink-soft">
+              No completed pilot yet — this is how we <em>will</em> prove measurable impact before any city-wide commitment.
+            </p>
+          </div>
+
+          <div class="lg:col-span-7">
+            <ol class="space-y-4">
+              <li class="flex items-start gap-5 rounded-2xl border border-line bg-white p-6">
+                <span class="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-brand-magenta/10 text-base font-bold text-brand-magenta">1</span>
+                <div><h3 class="text-lg font-bold text-ink">Pilot in one district</h3><p class="mt-1 text-[15px] leading-relaxed text-ink-soft">Calibrate the model against real local conditions and prove measurable impact.</p></div>
+              </li>
+              <li class="flex items-start gap-5 rounded-2xl border border-line bg-white p-6">
+                <span class="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-brand-orange/10 text-base font-bold text-brand-orange">2</span>
+                <div><h3 class="text-lg font-bold text-ink">Government partnership</h3><p class="mt-1 text-[15px] leading-relaxed text-ink-soft">Establish a procurement-ready, KPI-based path to scale with the authority.</p></div>
+              </li>
+              <li class="flex items-start gap-5 rounded-2xl border border-line bg-white p-6">
+                <span class="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-brand-green/10 text-base font-bold text-brand-green">3</span>
+                <div><h3 class="text-lg font-bold text-ink">Platform integration</h3><p class="mt-1 text-[15px] leading-relaxed text-ink-soft">Connect Trafiqo into existing traffic, data and mobility systems.</p></div>
+              </li>
+              <li class="flex items-start gap-5 rounded-2xl border border-line bg-white p-6">
+                <span class="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-ink/5 text-base font-bold text-ink">4</span>
+                <div><h3 class="text-lg font-bold text-ink">Scale to new districts &amp; cities</h3><p class="mt-1 text-[15px] leading-relaxed text-ink-soft">Extend proven results across the network and to new partners.</p></div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 9 · TRUST / DATA GOVERNANCE (verbatim) ============================ -->
+    <section id="trust" class="bg-white">
+      <div class="mx-auto max-w-content px-6 py-20 md:py-28">
+        <div class="max-w-3xl">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-magenta">Trust &amp; data governance</p>
+          <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Built for public-sector trust — privacy-aware, auditable, and under your control.</h2>
+          <p class="mt-6 text-lg leading-relaxed text-ink-soft">Trafiqo is a decision-support platform, not an autonomous system. Cities and transport authorities stay in control; every recommendation is documented, testable, and human-reviewed.</p>
+        </div>
+
+        <!-- 6 trust statements -->
+        <div class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div class="flex gap-3 rounded-2xl border border-line bg-mist p-6">
+            <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" /></svg>
+            <p class="text-[15px] leading-relaxed text-ink">Trafiqo works only with aggregated, anonymised mobility data approved by city partners.</p>
+          </div>
+          <div class="flex gap-3 rounded-2xl border border-line bg-mist p-6">
+            <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" /></svg>
+            <p class="text-[15px] leading-relaxed text-ink">We model synthetic agents — simulated populations — never named individuals.</p>
+          </div>
+          <div class="flex gap-3 rounded-2xl border border-line bg-mist p-6">
+            <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" /></svg>
+            <p class="text-[15px] leading-relaxed text-ink">Data ownership stays with the city or its authorised operator. Trafiqo acts as a contracted technology provider.</p>
+          </div>
+          <div class="flex gap-3 rounded-2xl border border-line bg-mist p-6">
+            <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" /></svg>
+            <p class="text-[15px] leading-relaxed text-ink">Trafiqo is designed as decision-support with human oversight, aligned with the EU AI Act's risk-based approach.</p>
+          </div>
+          <div class="flex gap-3 rounded-2xl border border-line bg-mist p-6">
+            <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" /></svg>
+            <p class="text-[15px] leading-relaxed text-ink">Model outputs are documented, testable, and auditable — no black-box decisions.</p>
+          </div>
+          <div class="flex gap-3 rounded-2xl border border-line bg-mist p-6">
+            <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" /></svg>
+            <p class="text-[15px] leading-relaxed text-ink">We support DPIA and contractual GDPR compliance for public-sector deployments where required.</p>
+          </div>
+        </div>
+
+        <!-- FAQ accordion -->
+        <div class="mt-14 grid gap-12 lg:grid-cols-12">
+          <div class="lg:col-span-4">
+            <h3 class="text-2xl font-extrabold tracking-tight text-ink">Frequently asked questions</h3>
+            <p class="mt-3 text-[15px] leading-relaxed text-ink-soft">The detail behind our governance commitments — written for procurement, legal and data-protection teams.</p>
+          </div>
+
+          <div class="lg:col-span-8">
+            <div class="divide-y divide-line border-y border-line">
+              <!-- Q1 -->
+              <div class="faq">
+                <button class="faq-q flex w-full items-center justify-between gap-4 py-5 text-left" aria-expanded="false">
+                  <span class="text-base font-semibold text-ink">What data does Trafiqo use?</span>
+                  <svg class="faq-icon h-5 w-5 flex-shrink-0 text-brand-magenta" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                </button>
+                <div class="faq-a"><div><p class="pb-5 text-[15px] leading-relaxed text-ink-soft">Aggregated mobility and traffic inputs — traffic volumes, road-network demand, pricing signals, events, and contextual factors. We use data approved and provided through city partners, not raw personal records.</p></div></div>
+              </div>
+              <!-- Q2 -->
+              <div class="faq">
+                <button class="faq-q flex w-full items-center justify-between gap-4 py-5 text-left" aria-expanded="false">
+                  <span class="text-base font-semibold text-ink">Does Trafiqo process personal data?</span>
+                  <svg class="faq-icon h-5 w-5 flex-shrink-0 text-brand-magenta" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                </button>
+                <div class="faq-a"><div><p class="pb-5 text-[15px] leading-relaxed text-ink-soft">Trafiqo is designed to operate on aggregated and anonymised or properly pseudonymised data. Our behavioural models run on synthetic agents representing population-level patterns, not identifiable individuals. Where any processing could fall under GDPR, we support the required safeguards, including DPIA.</p></div></div>
+              </div>
+              <!-- Q3 -->
+              <div class="faq">
+                <button class="faq-q flex w-full items-center justify-between gap-4 py-5 text-left" aria-expanded="false">
+                  <span class="text-base font-semibold text-ink">Who owns the data?</span>
+                  <svg class="faq-icon h-5 w-5 flex-shrink-0 text-brand-magenta" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                </button>
+                <div class="faq-a"><div><p class="pb-5 text-[15px] leading-relaxed text-ink-soft">The city or its authorised operator. Trafiqo operates as a technology provider under contractual terms and does not claim ownership of partner data.</p></div></div>
+              </div>
+              <!-- Q4 -->
+              <div class="faq">
+                <button class="faq-q flex w-full items-center justify-between gap-4 py-5 text-left" aria-expanded="false">
+                  <span class="text-base font-semibold text-ink">How is the model validated?</span>
+                  <svg class="faq-icon h-5 w-5 flex-shrink-0 text-brand-magenta" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                </button>
+                <div class="faq-a"><div><p class="pb-5 text-[15px] leading-relaxed text-ink-soft">Through historical backtesting on real city data, out-of-sample testing, and pilot calibration with transport authorities. Outputs include confidence indicators so cities can judge reliability, rather than treating predictions as certainties.</p></div></div>
+              </div>
+              <!-- Q5 -->
+              <div class="faq">
+                <button class="faq-q flex w-full items-center justify-between gap-4 py-5 text-left" aria-expanded="false">
+                  <span class="text-base font-semibold text-ink">Is Trafiqo high-risk AI under the EU AI Act?</span>
+                  <svg class="faq-icon h-5 w-5 flex-shrink-0 text-brand-magenta" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                </button>
+                <div class="faq-a"><div><p class="pb-5 text-[15px] leading-relaxed text-ink-soft">Trafiqo is built as a decision-support tool with human oversight, not as an autonomous safety or infrastructure-control system. It is designed to align with the EU AI Act's risk-based approach; final classification depends on the specific deployment, which we assess together with each city.</p></div></div>
+              </div>
+              <!-- Q6 -->
+              <div class="faq">
+                <button class="faq-q flex w-full items-center justify-between gap-4 py-5 text-left" aria-expanded="false">
+                  <span class="text-base font-semibold text-ink">Why does pilot deployment matter?</span>
+                  <svg class="faq-icon h-5 w-5 flex-shrink-0 text-brand-magenta" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                </button>
+                <div class="faq-a"><div><p class="pb-5 text-[15px] leading-relaxed text-ink-soft">A pilot calibrates the model against real local conditions, proves measurable impact, and establishes a procurement-ready, KPI-based path to scale — reducing risk before any city-wide commitment.</p></div></div>
+              </div>
+              <!-- Q7 -->
+              <div class="faq">
+                <button class="faq-q flex w-full items-center justify-between gap-4 py-5 text-left" aria-expanded="false">
+                  <span class="text-base font-semibold text-ink">Does Trafiqo make decisions automatically?</span>
+                  <svg class="faq-icon h-5 w-5 flex-shrink-0 text-brand-magenta" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                </button>
+                <div class="faq-a"><div><p class="pb-5 text-[15px] leading-relaxed text-ink-soft">No. Trafiqo produces recommendations and scenario analysis. City experts review and decide. Humans stay in the loop by design.</p></div></div>
+              </div>
+            </div>
+
+            <div class="mt-8 flex flex-col items-start gap-4 rounded-2xl border border-line bg-mist p-6 sm:flex-row sm:items-center sm:justify-between">
+              <p class="text-[15px] font-medium text-ink">See how Trafiqo models behaviour — safely and transparently.</p>
+              <a href="#contact" class="inline-flex flex-shrink-0 items-center gap-2 rounded-full bg-brand-magenta px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#bd1a5e]">Request a city demo
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16m0 0-6-6m6 6-6 6" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 10 · TEAM / PARTNERS ============================ -->
+    <section id="team" class="bg-mist">
+      <div class="mx-auto max-w-content px-6 py-20 md:py-28">
+        <div class="max-w-2xl">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Team &amp; partners</p>
+          <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">The people and partners behind Trafiqo.</h2>
+        </div>
+
+        <!-- Team placeholders -->
+        <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-2xl border border-line bg-white p-6 text-center">
+            <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-mist text-ink-soft" aria-hidden="true">
+              <svg class="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.5 19.5a7.5 7.5 0 0 1 15 0v.75H4.5v-.75z" /></svg>
+            </div>
+            <p class="mt-4 font-bold text-ink">Name placeholder</p>
+            <p class="mt-1 text-sm text-ink-soft">Founder &amp; CEO</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-white p-6 text-center">
+            <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-mist text-ink-soft" aria-hidden="true">
+              <svg class="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.5 19.5a7.5 7.5 0 0 1 15 0v.75H4.5v-.75z" /></svg>
+            </div>
+            <p class="mt-4 font-bold text-ink">Name placeholder</p>
+            <p class="mt-1 text-sm text-ink-soft">Behavioural Modelling Lead</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-white p-6 text-center">
+            <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-mist text-ink-soft" aria-hidden="true">
+              <svg class="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.5 19.5a7.5 7.5 0 0 1 15 0v.75H4.5v-.75z" /></svg>
+            </div>
+            <p class="mt-4 font-bold text-ink">Name placeholder</p>
+            <p class="mt-1 text-sm text-ink-soft">Data &amp; Platform Lead</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-white p-6 text-center">
+            <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-mist text-ink-soft" aria-hidden="true">
+              <svg class="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.5 19.5a7.5 7.5 0 0 1 15 0v.75H4.5v-.75z" /></svg>
+            </div>
+            <p class="mt-4 font-bold text-ink">Name placeholder</p>
+            <p class="mt-1 text-sm text-ink-soft">City Partnerships</p>
+          </div>
+        </div>
+
+        <!-- Partners -->
+        <div class="mt-10 rounded-2xl border border-line bg-white p-8">
+          <p class="text-xs font-semibold uppercase tracking-wide text-ink-soft">Partners &amp; collaborations</p>
+          <div class="mt-6 grid gap-6 sm:grid-cols-2">
+            <div class="flex items-start gap-4">
+              <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl border border-line bg-mist text-xs font-semibold text-ink-soft" aria-hidden="true">Logo</div>
+              <div>
+                <p class="font-bold text-ink">Miracle Traffic AI</p>
+                <p class="mt-1 text-[15px] leading-relaxed text-ink-soft">Technology &amp; deployment partner — the camera sensing layer that shows what's happening now.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl border border-line bg-mist text-xs font-semibold text-ink-soft" aria-hidden="true">Logo</div>
+              <div>
+                <p class="font-bold text-ink">Demola</p>
+                <p class="mt-1 text-[15px] leading-relaxed text-ink-soft">Innovation program collaboration supporting Trafiqo's development.</p>
+              </div>
+            </div>
+          </div>
+          <p class="mt-6 text-xs italic text-ink-soft">Team names, photos and partner logos are placeholders pending final assets.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 11 · CONTACT / CTA ============================ -->
+    <section id="contact" class="bg-white">
+      <div class="mx-auto max-w-content px-6 py-20 md:py-28">
+        <div class="grid gap-12 lg:grid-cols-2 lg:items-start">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-wider text-brand-magenta">Contact</p>
+            <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Request a city demo.</h2>
+            <p class="mt-6 text-lg leading-relaxed text-ink-soft">
+              Tell us about your city or authority and what you're trying to solve. We'll show you how Trafiqo models behaviour — safely, transparently, and with you in control.
+            </p>
+            <ul class="mt-8 space-y-3 text-[15px] text-ink-soft">
+              <li class="flex items-center gap-3"><span class="h-1.5 w-1.5 rounded-full bg-brand-magenta"></span>Decision-support, with human oversight</li>
+              <li class="flex items-center gap-3"><span class="h-1.5 w-1.5 rounded-full bg-brand-orange"></span>Aggregated, anonymised data only</li>
+              <li class="flex items-center gap-3"><span class="h-1.5 w-1.5 rounded-full bg-brand-green"></span>Pilot-first, procurement-ready path to scale</li>
+            </ul>
+          </div>
+
+          <!-- Form (static; wire action to a real endpoint or mailto) -->
+          <form id="demo-form" class="rounded-3xl border border-line bg-mist p-7 md:p-8" novalidate>
+            <div class="grid gap-5">
+              <div>
+                <label for="f-name" class="block text-sm font-semibold text-ink">Name</label>
+                <input id="f-name" name="name" type="text" autocomplete="name" required class="mt-2 w-full rounded-xl border border-line bg-white px-4 py-3 text-ink outline-none transition focus:border-brand-magenta focus:ring-2 focus:ring-brand-magenta/20" placeholder="Your name" />
+              </div>
+              <div>
+                <label for="f-org" class="block text-sm font-semibold text-ink">Organisation</label>
+                <input id="f-org" name="organisation" type="text" autocomplete="organization" required class="mt-2 w-full rounded-xl border border-line bg-white px-4 py-3 text-ink outline-none transition focus:border-brand-magenta focus:ring-2 focus:ring-brand-magenta/20" placeholder="City, authority or company" />
+              </div>
+              <div>
+                <label for="f-email" class="block text-sm font-semibold text-ink">Email</label>
+                <input id="f-email" name="email" type="email" autocomplete="email" required class="mt-2 w-full rounded-xl border border-line bg-white px-4 py-3 text-ink outline-none transition focus:border-brand-magenta focus:ring-2 focus:ring-brand-magenta/20" placeholder="you@organisation.gov" />
+              </div>
+              <div>
+                <label for="f-msg" class="block text-sm font-semibold text-ink">Message</label>
+                <textarea id="f-msg" name="message" rows="4" class="mt-2 w-full rounded-xl border border-line bg-white px-4 py-3 text-ink outline-none transition focus:border-brand-magenta focus:ring-2 focus:ring-brand-magenta/20" placeholder="What are you trying to solve?"></textarea>
+              </div>
+              <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-full bg-brand-magenta px-6 py-3.5 text-base font-semibold text-white transition hover:bg-[#bd1a5e]">
+                Request a city demo
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16m0 0-6-6m6 6-6 6" /></svg>
+              </button>
+              <p id="form-status" class="hidden rounded-xl border border-brand-green/30 bg-brand-green/10 px-4 py-3 text-sm font-medium text-brand-green" role="status"></p>
+              <p class="text-xs leading-relaxed text-ink-soft">By submitting, you agree to be contacted about Trafiqo. We process your details only to respond to this request.</p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================ FOOTER ============================ -->
+  <footer class="bg-ink text-white">
+    <div class="mx-auto max-w-content px-6 py-14">
+      <div class="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-2.5">
+            <svg viewBox="0 0 36 24" class="h-5 w-auto" aria-hidden="true">
+              <circle cx="8" cy="12" r="5" fill="#D6206B" />
+              <circle cx="19" cy="12" r="4" fill="#F5821F" />
+              <circle cx="29" cy="12" r="3" fill="#1FA86B" />
+            </svg>
+            <span class="text-xl font-extrabold tracking-tight text-white">Trafiqo</span>
+          </div>
+          <p class="mt-4 text-[15px] font-medium text-white/70">Smarter choices. Smoother cities.</p>
+          <p class="mt-3 text-sm leading-relaxed text-white/50">A decision-support platform for cities and transport authorities — privacy-aware, auditable, human-reviewed.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-10 sm:grid-cols-3">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-white/40">Explore</p>
+            <ul class="mt-4 space-y-2.5 text-sm">
+              <li><a href="#product" class="text-white/70 transition hover:text-white">Product</a></li>
+              <li><a href="#how" class="text-white/70 transition hover:text-white">How it works</a></li>
+              <li><a href="#why" class="text-white/70 transition hover:text-white">Why cities care</a></li>
+              <li><a href="#trust" class="text-white/70 transition hover:text-white">Trust</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-white/40">Resources</p>
+            <ul class="mt-4 space-y-2.5 text-sm">
+              <li><a href="assets/Trafiqo-Technical-Brief.pdf" download class="text-white/70 transition hover:text-white">Technical brief</a></li>
+              <li><a href="#validation" class="text-white/70 transition hover:text-white">Validation roadmap</a></li>
+              <li><a href="#team" class="text-white/70 transition hover:text-white">Team &amp; partners</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-white/40">Get started</p>
+            <ul class="mt-4 space-y-2.5 text-sm">
+              <li><a href="#contact" class="text-white/70 transition hover:text-white">Request a city demo</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-white/45 sm:flex-row sm:items-center sm:justify-between">
+        <p>&copy; <span id="year">2026</span> Trafiqo. All rights reserved.</p>
+        <p>Decision-support · Human oversight · GDPR-aware</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================ SCRIPT (vanilla JS) ============================ -->
+  <script>
+    (function () {
+      // Mobile menu
+      var btn = document.getElementById('menu-btn');
+      var menu = document.getElementById('mobile-menu');
+      var openIcon = document.getElementById('menu-open-icon');
+      var closeIcon = document.getElementById('menu-close-icon');
+
+      function setMenu(open) {
+        menu.classList.toggle('hidden', !open);
+        openIcon.classList.toggle('hidden', open);
+        closeIcon.classList.toggle('hidden', !open);
+        btn.setAttribute('aria-expanded', String(open));
+        btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      }
+      btn.addEventListener('click', function () {
+        setMenu(menu.classList.contains('hidden'));
+      });
+      document.querySelectorAll('.mobile-link').forEach(function (a) {
+        a.addEventListener('click', function () { setMenu(false); });
+      });
+
+      // FAQ accordion
+      document.querySelectorAll('.faq-q').forEach(function (q) {
+        q.addEventListener('click', function () {
+          var item = q.closest('.faq');
+          var open = item.classList.toggle('open');
+          q.setAttribute('aria-expanded', String(open));
+        });
+      });
+
+      // Active nav link on scroll
+      var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-link'));
+      var idToLink = {};
+      navLinks.forEach(function (l) {
+        var id = l.getAttribute('href').slice(1);
+        idToLink[id] = l;
+      });
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          var link = idToLink[e.target.id];
+          if (!link) return;
+          if (e.isIntersecting) {
+            navLinks.forEach(function (l) { l.classList.remove('active'); });
+            link.classList.add('active');
+          }
+        });
+      }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+      ['product', 'how', 'why', 'trust', 'contact'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) observer.observe(el);
+      });
+
+      // Contact form (no backend yet — graceful confirmation)
+      var form = document.getElementById('demo-form');
+      var status = document.getElementById('form-status');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        status.textContent = 'Thanks — your request has been captured. Connect this form to your inbox or CRM to receive submissions.';
+        status.classList.remove('hidden');
+        form.reset();
+      });
+
+      // Footer year
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>
