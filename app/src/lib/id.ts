@@ -1,0 +1,9 @@
+// Safe id generator (crypto.randomUUID isn't guaranteed in every context).
+export function uuid(): string {
+  try {
+    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return crypto.randomUUID();
+  } catch {
+    /* ignore */
+  }
+  return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+}
